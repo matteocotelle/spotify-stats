@@ -2,6 +2,7 @@
 
 import { SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI } from '$env/static/private';
 import { json, type RequestEvent} from '@sveltejs/kit';
+import { dev } from '$app/environment';
 
 const scopes = 'user-top-read';
 
@@ -21,7 +22,8 @@ export function GET({ cookies }: RequestEvent) {
     cookies.set('spotify_auth_state', state, { 
         path: '/', 
         httpOnly: true, 
-        secure: false, 
+        secure: !dev, 
+        sameSite: 'lax',
         maxAge: 3600 
     });
 

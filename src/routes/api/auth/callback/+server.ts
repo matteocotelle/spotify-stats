@@ -2,6 +2,7 @@
 
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI } from '$env/static/private';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 
 export async function GET({ url, cookies }: RequestEvent) {
     const code = url.searchParams.get('code') || null;
@@ -37,8 +38,8 @@ export async function GET({ url, cookies }: RequestEvent) {
         const maxAge = expires_in;
 
         // Stockage des Tokens dans des cookies sécurisés
-        cookies.set('access_token', access_token, { path: '/', httpOnly: true, secure: false, maxAge });
-        cookies.set('refresh_token', refresh_token, { path: '/', httpOnly: true, secure: false, maxAge: 365 * 24 * 60 * 60 });
+        cookies.set('access_token', access_token, { path: '/', httpOnly: true, secure: !dev, sameSite: 'lax', maxAge });
+        cookies.set('refresh_token', refresh_token, { path: '/', httpOnly: true, secure: !dev, sameSite: 'lax', maxAge: 365 * 24 * 60 * 60 });
 
         // Redirection vers la page de statistiques
         throw redirect(303, '/stats');
